@@ -69,7 +69,6 @@ public:
         for (int j = 0; j < in_features; ++j) {
             const float x = input[j];
             const float* w = &weights[size_t(j) * out_features];
-            #pragma omp parallel for
             for (int i = 0; i < out_features; ++i) {
                 last_z[i] += x * w[i];
             }
