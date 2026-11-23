@@ -1,0 +1,15 @@
+=== v0.0 | Mon Nov 23 03:11:33 PM EST 2026 | job 30705 | no compute10 ===
+CPU(s):                               24
+Model name:                           13th Gen Intel(R) Core(TM) i7-13700T
+CPU(s) scaling MHz:                   28%
+L1d cache:                            640 KiB (16 instances)
+L2 cache:                             24 MiB (10 instances)
+L3 cache:                             30 MiB (1 instance)
+flags: CXXFLAGS ?= -std=c++17 -O2 -g
+OK: saida identica a referencia
+host: compute10
+cpu: 13th Gen Intel(R) Core(TM) i7-13700T
+compilador: g++ (GCC) 14.2.0
+binario: ./barenn | repeticoes: 10 | OMP_NUM_THREADS: 1 | BARENN_BATCH: n/a
+tempo de treino (s): media 0.4598 | min 0.4587 | max 0.4623 | 10 execucoes
+scripts/profile_cpu.sh: line 10: valgrind: command not found
