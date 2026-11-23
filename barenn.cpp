@@ -125,6 +125,9 @@ public:
     // buffers (padrão "private + merge" da Aula 8).
     // ---------------------------------------------------------------------
     size_t NumPesos() const { return weights.size(); }
+    // Acesso direto aos parâmetros (usado na atualização do lote e na GPU).
+    vector<float>& Pesos() { return weights; }
+    vector<float>& Vies() { return bias; }
 
     void ForwardAmostra(const float* input, float* z,
                         float* a) const {
@@ -173,31 +176,6 @@ public:
         }
         for (int i = 0; i < out_features; ++i) {
             gb[i] += delta[i];
-        }
-    }
-
-    // Merge: soma os acumuladores das T threads (na ordem t = 0, 1, ...) e
-    // atualiza os parâmetros. Chamada DENTRO da região paralela: o "omp for"
-    // divide os parâmetros entre as threads, cada uma escrevendo em posições
-    // distintas (sem condição de corrida).
-    void AtualizarLote(const float* accW, const float* accb, int T,
-                       size_t stride, float learning_rate) {
-        const size_t n = weights.size();
-        #pragma omp for schedule(static)
-        for (size_t p = 0; p < n; ++p) {
-            float g = accW[p];
-            for (int t = 1; t < T; ++t) {
-                g += accW[size_t(t) * stride + p];
-            }
-            weights[p] -= learning_rate * g;
-        }
-        #pragma omp for schedule(static)
-        for (int i = 0; i < out_features; ++i) {
-            float g = accb[i];
-            for (int t = 1; t < T; ++t) {
-                g += accb[size_t(t) * stride + i];
-            }
-            bias[i] -= learning_rate * g;
         }
     }
 
@@ -412,6 +390,15 @@ int main(int argc, char** argv) {
         const size_t oW3 = ob2 + n2, ob3 = oW3 + l3.NumPesos();
         const size_t P = ob3 + n3;
         vector<float> acumuladores(size_t(T) * P);
+        // destino[q] aponta para o parâmetro que corresponde à posição q do
+        // acumulador. Assim a atualização das três camadas vira um único laço.
+        vector<float*> destino(P);
+        for (size_t k = 0; k < l1.NumPesos(); ++k) destino[oW1 + k] = &l1.Pesos()[k];
+        for (int k = 0; k < n1; ++k) destino[ob1 + k] = &l1.Vies()[k];
+        for (size_t k = 0; k < l2.NumPesos(); ++k) destino[oW2 + k] = &l2.Pesos()[k];
+        for (int k = 0; k < n2; ++k) destino[ob2 + k] = &l2.Vies()[k];
+        for (size_t k = 0; k < l3.NumPesos(); ++k) destino[oW3 + k] = &l3.Pesos()[k];
+        for (int k = 0; k < n3; ++k) destino[ob3 + k] = &l3.Vies()[k];
         // Perda acumulada por thread.
         vector<double> perda_thread(T, 0.0);
         const int N = static_cast<int>(treino.size());
@@ -457,11 +444,19 @@ int main(int argc, char** argv) {
                     }
                     // (barreira implícita do omp for: todos os gradientes prontos)
 
-                    // 2) Merge dos acumuladores e atualização dos pesos.
-                    const float* acc = acumuladores.data();
-                    l3.AtualizarLote(acc + oW3, acc + ob3, T, P, taxa);
-                    l2.AtualizarLote(acc + oW2, acc + ob2, T, P, taxa);
-                    l1.AtualizarLote(acc + oW1, acc + ob1, T, P, taxa);
+                    // 2) Merge: soma os acumuladores das T threads (na ordem
+                    //    k = 0, 1, ...) e atualiza os parâmetros. O omp for divide
+                    //    os parâmetros entre as threads: cada posição é escrita
+                    //    por uma única thread (sem condição de corrida). Um laço
+                    //    só para as três camadas => uma barreira só.
+                    #pragma omp for schedule(static)
+                    for (size_t q = 0; q < P; ++q) {
+                        float g = acumuladores[q];
+                        for (int k = 1; k < T; ++k) {
+                            g += acumuladores[size_t(k) * P + q];
+                        }
+                        *destino[q] -= taxa * g;
+                    }
                 }
                 // Fim da época: soma as perdas das threads em ordem fixa.
                 #pragma omp single
