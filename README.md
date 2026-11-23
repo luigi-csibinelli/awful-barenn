@@ -1,3 +1,48 @@
+# Resultados — Barenn otimizado (CPU + CUDA)
+
+**Ambiente:** Cluster Franky. CPU: fila `pluton_cpu` (Intel i7-13700T, 8 núcleos P + 8 núcleos E), g++ 14.2. GPU: fila `merry_gpu` (NVIDIA RTX A1000, host i9-14900), CUDA 12.8.1.
+**Medida:** tempo de treino (51 épocas, 3823 imagens), média de 10 execuções após 1 aquecimento (`scripts/bench.sh`).
+**Corretude:** `scripts/validate.sh` compara cada versão com a saída do código legado (`ref/saida_referencia.txt`), incluindo um checksum de 9 casas de todos os pesos.
+
+| Versão | Tag | Tempo de treino | Speedup vs baseline | Acurácia (teste) | Saída vs referência |
+|---|---|---|---|---|---|
+| **Baseline legado** (`-O2`) | [v0.0-baseline](https://github.com/luigi-csibinelli/awful-barenn/tree/v0.0-baseline) | 0,4598 s | 1,00× | 95,5% | referência |
+| CPU: `Backward` em um percurso, sem cópias | [v0.1-cpu-memoria](https://github.com/luigi-csibinelli/awful-barenn/tree/v0.1-cpu-memoria) | 0,3877 s | 1,19× | 95,5% | idêntica |
+| CPU: laço vetorizável + `-O3` | [v0.2-cpu-layout](https://github.com/luigi-csibinelli/awful-barenn/tree/v0.2-cpu-layout) | 0,1462 s | 3,15× | 95,5% | idêntica |
+| **CPU otimizada** (OpenMP, mini-batch B = 32, 8 threads) | [v0.3-cpu-openmp](https://github.com/luigi-csibinelli/awful-barenn/tree/v0.3-cpu-openmp) | **0,0745 s** | **6,17×** | 96,5% | por acurácia (B = 1 idêntica) |
+| **CUDA inicial** (1 kernel por camada) | [v1.0-cuda](https://github.com/luigi-csibinelli/awful-barenn/tree/v1.0-cuda) | 5,0695 s | 0,09× | 95,5% | idêntica |
+| CUDA: 1 kernel por época | [v1.1-cuda-epoca](https://github.com/luigi-csibinelli/awful-barenn/tree/v1.1-cuda-epoca) | 1,2702 s | 0,36× | 95,5% | idêntica |
+| **CUDA otimizado** (shared memory + padding) | [v1.2-cuda-shared](https://github.com/luigi-csibinelli/awful-barenn/tree/v1.2-cuda-shared) | **0,4050 s** | **1,14×** | 95,5% | idêntica |
+
+**Conclusão:** a melhor versão é a CPU com OpenMP (6,2× sobre o legado). Na GPU, a shared memory levou o treino de 5,07 s para 0,41 s (12,5×), mas o algoritmo processa uma amostra por vez e cada camada tem no máximo 64 neurônios: o kernel usa 1 bloco de 64 threads, com ocupação alcançada de ~4% em 1 SM (Nsight Compute). Para aproveitar a GPU inteira seria preciso mudar o algoritmo (mini-batch na GPU), com a mesma troca de corretude discutida na issue de OpenMP.
+
+## Índice das etapas
+
+| # | Etapa | Issue | Pull Request | Tag |
+|---|---|---|---|---|
+| 1 | Medição e profiling do código legado | [#2](https://github.com/luigi-csibinelli/awful-barenn/issues/2) | [#3](https://github.com/luigi-csibinelli/awful-barenn/pull/3) | [v0.0-baseline](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v0.0-baseline) |
+| 2 | `Backward` em um percurso e sem cópias | [#4](https://github.com/luigi-csibinelli/awful-barenn/issues/4) | [#5](https://github.com/luigi-csibinelli/awful-barenn/pull/5) | [v0.1-cpu-memoria](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v0.1-cpu-memoria) |
+| 3 | Laço vetorizável e flags de compilação | [#6](https://github.com/luigi-csibinelli/awful-barenn/issues/6) | [#7](https://github.com/luigi-csibinelli/awful-barenn/pull/7) | [v0.2-cpu-layout](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v0.2-cpu-layout) |
+| 4 | Paralelismo multicore com OpenMP | [#8](https://github.com/luigi-csibinelli/awful-barenn/issues/8) | [#9](https://github.com/luigi-csibinelli/awful-barenn/pull/9) | [v0.3-cpu-openmp](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v0.3-cpu-openmp) |
+| 5 | Porte inicial para CUDA | [#10](https://github.com/luigi-csibinelli/awful-barenn/issues/10) | [#11](https://github.com/luigi-csibinelli/awful-barenn/pull/11) | [v1.0-cuda](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v1.0-cuda) |
+| 6 | Um kernel por época | [#12](https://github.com/luigi-csibinelli/awful-barenn/issues/12) | [#13](https://github.com/luigi-csibinelli/awful-barenn/pull/13) | [v1.1-cuda-epoca](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v1.1-cuda-epoca) |
+| 7 | Pesos e ativações em shared memory | [#14](https://github.com/luigi-csibinelli/awful-barenn/issues/14) | [#15](https://github.com/luigi-csibinelli/awful-barenn/pull/15) | [v1.2-cuda-shared](https://github.com/luigi-csibinelli/awful-barenn/releases/tag/v1.2-cuda-shared) |
+
+## Como reproduzir
+
+    git checkout <tag>
+    make                                              # versão CPU (no head-node do Franky)
+    sbatch scripts/franky_cpu.slurm <tag>             # validação + tempo (CPU)
+    sbatch scripts/franky_omp.slurm <tag>             # escalabilidade OpenMP (a partir de v0.3)
+    module load cuda/12.8.1 && make barenn_cuda       # versão GPU (a partir de v1.0)
+    sbatch scripts/franky_gpu.slurm <tag> bench 10    # validação + tempo (GPU)
+    scripts/profile_cpu.sh <tag>                      # callgrind + cachegrind (no head-node)
+
+Resultados brutos em `resultados/` e relatórios de profiling em `profiling/`.
+
+---
+
+
 # Projeto Barenn: O Legado, a Sobrevivência e o Salto para a GPU
 
 Era uma segunda-feira aparentemente tranquila quando a demanda chegou à sua mesa. A liderança técnica se aproximou com um sorriso contido e soltou aquela frase clássica que faz qualquer engenheiro gelar por dentro:
