@@ -1,0 +1,33 @@
+=== v0.3 | Mon Nov 23 04:42:23 PM EST 2026 | job 30807 ===
+CPU(s):                               24
+Model name:                           13th Gen Intel(R) Core(TM) i7-13700T
+Core(s) per socket:                   16
+Socket(s):                            1
+CPU(s) scaling MHz:                   24%
+L1d cache:                            640 KiB (16 instances)
+L2 cache:                             24 MiB (10 instances)
+L3 cache:                             30 MiB (1 instance)
+--- validacao: B=1 deve ser IDENTICO ao original (com 4 threads)
+OK: saida identica a referencia
+--- validacao: B=32 (mini-batch muda a ordem das contas -> acuracia)
+OK: acuracia 96.5% (referencia 95.5%)
+--- escalabilidade (B=32)
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 1 | BARENN_BATCH: 32
+tempo de treino (s): media 0.1579 | min 0.1571 | max 0.1606 | 5 execucoes
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 2 | BARENN_BATCH: 32
+tempo de treino (s): media 0.1580 | min 0.1575 | max 0.1582 | 5 execucoes
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 4 | BARENN_BATCH: 32
+tempo de treino (s): media 0.1331 | min 0.1301 | max 0.1348 | 5 execucoes
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 8 | BARENN_BATCH: 32
+tempo de treino (s): media 0.1637 | min 0.1634 | max 0.1645 | 5 execucoes
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 12 | BARENN_BATCH: 32
+tempo de treino (s): media 0.3032 | min 0.3012 | max 0.3039 | 5 execucoes
+binario: ./barenn | repeticoes: 5 | OMP_NUM_THREADS: 16 | BARENN_BATCH: 32
+tempo de treino (s): media 0.3781 | min 0.3762 | max 0.3802 | 5 execucoes
+--- tamanho do lote (8 threads)
+Epoca 51/51 | perda media 0.0119 Tempo de treino 0.5958 s Acuracia 96.5% | 1735 acertos em 1797 imagens  <- B=8
+Epoca 51/51 | perda media 0.0114 Tempo de treino 0.3069 s Acuracia 96.5% | 1735 acertos em 1797 imagens  <- B=16
+Epoca 51/51 | perda media 0.0119 Tempo de treino 0.1638 s Acuracia 96.5% | 1735 acertos em 1797 imagens  <- B=32
+Epoca 51/51 | perda media 0.1751 Tempo de treino 0.0944 s Acuracia 75.2% | 1352 acertos em 1797 imagens  <- B=64
+--- custo do modo lote com B=1 (1 thread)
+tempo de treino (s): media 0.4423 | min 0.4421 | max 0.4424 | 5 execucoes
