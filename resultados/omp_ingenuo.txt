@@ -1,0 +1,4 @@
+t=1 Tempo de treino 3.4885 s
+t=2 Tempo de treino 68.4545 s
+t=4 >120s
+t=8 >120s
