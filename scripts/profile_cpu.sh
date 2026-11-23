@@ -3,7 +3,8 @@
 # callgrind: custo (instrucoes) por funcao e por linha.
 # cachegrind: acessos e falhas de cache (L1 e ultimo nivel).
 # Saidas em profiling/.
-set -euo pipefail
+# Sem pipefail: o "| head" fecha o pipe cedo e isso nao e erro.
+set -eu
 ROT=${1:?informe um rotulo, ex.: v0.1}
 mkdir -p profiling
 

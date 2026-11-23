@@ -6,6 +6,7 @@
 #SBATCH --time=00:30:00
 #SBATCH --mem=2G
 # Uso (no head-node):  make && sbatch scripts/franky_cpu.slurm <rotulo>
+# Profiling (no head-node, o valgrind so existe la):  scripts/profile_cpu.sh <rotulo>
 # Os nos de computacao nao tem os headers do compilador: o binario e
 # compilado no head-node ANTES de submeter; o job so executa e mede.
 # Pede o no inteiro (16 CPUs) para nenhum outro job interferir na medicao.
@@ -20,4 +21,3 @@ echo "flags: $(grep -E '^CXXFLAGS' Makefile)"
 
 scripts/validate.sh ./barenn
 scripts/bench.sh ./barenn 10
-scripts/profile_cpu.sh "$ROT"
