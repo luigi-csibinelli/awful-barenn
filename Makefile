@@ -1,12 +1,20 @@
 .RECIPEPREFIX = >
 CXX      ?= g++
+NVCC     ?= nvcc
 CXXFLAGS ?= -std=c++17 -O3 -g -fopenmp
-TARGET   := barenn
+# --fmad=false: sem fused multiply-add, cada conta arredonda como na CPU e a
+# saída da GPU fica idêntica bit a bit à da CPU.
+NVFLAGS  ?= -std=c++17 -O3 --fmad=false
 
-$(TARGET): barenn.cpp
-> $(CXX) $(CXXFLAGS) -o $@ $<
+all: barenn
+
+barenn: barenn.cpp barenn.hpp
+> $(CXX) $(CXXFLAGS) -o $@ barenn.cpp
+
+barenn_cuda: barenn.cu barenn.hpp
+> $(NVCC) $(NVFLAGS) -o $@ barenn.cu
 
 clean:
-> rm -f $(TARGET)
+> rm -f barenn barenn_cuda
 
-.PHONY: clean
+.PHONY: all clean
