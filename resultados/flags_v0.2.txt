@@ -1,0 +1,18 @@
+== -O2
+OK: saida identica a referencia
+Checksum dos pesos -65.911822528
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+tempo de treino (s): media 0.4040 | min 0.4031 | max 0.4044 | 5 execucoes
+== -O3
+OK: saida identica a referencia
+Checksum dos pesos -65.911822528
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+tempo de treino (s): media 0.1462 | min 0.1459 | max 0.1467 | 5 execucoes
+== -Ofast
+FALHOU: saida diferente da referencia
+Checksum dos pesos -66.843539116
+Acuracia 95.7% | 1719 acertos em 1797 imagens
+tempo de treino (s): media 0.1266 | min 0.1261 | max 0.1268 | 5 execucoes
+== v0.1 com -O3
+OK: saida identica a referencia
+tempo de treino (s): media 0.1826 | min 0.1823 | max 0.1831 | 5 execucoes

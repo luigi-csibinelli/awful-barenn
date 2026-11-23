@@ -1,0 +1,14 @@
+=== v0.2 | Mon Nov 23 04:12:02 PM EST 2026 | job 30798 | no compute10 ===
+CPU(s):                               24
+Model name:                           13th Gen Intel(R) Core(TM) i7-13700T
+CPU(s) scaling MHz:                   31%
+L1d cache:                            640 KiB (16 instances)
+L2 cache:                             24 MiB (10 instances)
+L3 cache:                             30 MiB (1 instance)
+flags: CXXFLAGS ?= -std=c++17 -O3 -g
+OK: saida identica a referencia
+host: compute10
+cpu: 13th Gen Intel(R) Core(TM) i7-13700T
+compilador: g++ (GCC) 14.2.0
+binario: ./barenn | repeticoes: 10 | OMP_NUM_THREADS: 1 | BARENN_BATCH: n/a
+tempo de treino (s): media 0.1462 | min 0.1459 | max 0.1467 | 10 execucoes
