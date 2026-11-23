@@ -20,5 +20,5 @@ echo "callgrind: profiling/callgrind.$ROT.txt"
 
 valgrind --tool=cachegrind --cache-sim=yes --cachegrind-out-file="profiling/cachegrind.$ROT.out" \
   ./barenn > /dev/null 2> "profiling/cachegrind_resumo.$ROT.txt"
-cg_annotate "profiling/cachegrind.$ROT.out" | head -40 > "profiling/cachegrind.$ROT.txt"
+cg_annotate "profiling/cachegrind.$ROT.out" > "profiling/cachegrind.$ROT.txt" 2>/dev/null || true
 echo "cachegrind: profiling/cachegrind_resumo.$ROT.txt (D1/LL miss rate) e profiling/cachegrind.$ROT.txt"
