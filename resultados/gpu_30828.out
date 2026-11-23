@@ -1,0 +1,9 @@
+=== v1.1 | bench | Mon Nov 23 05:37:13 PM EST 2026 | job 30828 | no compute20 ===
+name, driver_version, memory.total [MiB], clocks.max.sm [MHz]
+NVIDIA RTX A1000, 570.124.06, 8188 MiB, 2100 MHz
+OK: saida identica a referencia
+host: compute20
+cpu: Intel(R) Core(TM) i9-14900
+compilador: g++ (GCC) 14.2.0
+binario: ./barenn_cuda | repeticoes: 10 | OMP_NUM_THREADS: n/a | BARENN_BATCH: n/a
+tempo de treino (s): media 1.2702 | min 1.2688 | max 1.2727 | 10 execucoes
