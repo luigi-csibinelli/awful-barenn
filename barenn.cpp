@@ -92,6 +92,20 @@ public:
         }
         return grad_in;
     }
+
+    // Soma de todos os parâmetros: usada apenas para validar a corretude.
+    double Checksum() const {
+        double total = 0;
+        for (const auto& row : weights) {
+            for (float weight : row) {
+                total += weight;
+            }
+        }
+        for (float b : bias) {
+            total += b;
+        }
+        return total;
+    }
 };
 
 struct Amostra {
@@ -300,6 +314,8 @@ int main(int argc, char** argv) {
                  << " | perda media " << perdas[epoca] << "\n";
         }
         cout << "Tempo de treino " << tempo.count() << " s\n";
+        cout << "Checksum dos pesos " << setprecision(9)
+             << l1.Checksum() + l2.Checksum() + l3.Checksum() << "\n";
         Barenn::avaliar(l1, l2, l3, teste);
     } catch (const exception& erro) {
         cerr << "Erro: " << erro.what() << "\n";
