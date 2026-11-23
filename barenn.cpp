@@ -25,8 +25,9 @@ class DenseLayer {
     int in_features;
     int out_features;
     bool final;
-    // Pesos contíguos em ordem de linha: weights[i * in_features + j] liga a
-    // entrada j ao neurônio de saída i.
+    // Pesos contíguos e TRANSPOSTOS: weights[j * out_features + i] liga a
+    // entrada j ao neurônio de saída i. Assim, para uma entrada j fixa, os pesos
+    // de todos os neurônios ficam lado a lado na memória.
     vector<float> weights;
     vector<float> bias;
     // Dados do último forward usados para calcular os gradientes. A entrada não
@@ -45,26 +46,36 @@ public:
           last_z(output_size), out(output_size), delta(output_size),
           grad_in(input_size) {
         // A semente fixa torna a inicialização de cada camada reproduzível.
-        // A ordem de preenchimento é a mesma da versão original (linha a linha).
+        // Os números são sorteados na mesma ordem da versão original
+        // (neurônio i por fora, entrada j por dentro).
         mt19937 gen(1337);
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
-        for (float& weight : weights) {
-            weight = distribution(gen);
+        for (int i = 0; i < out_features; ++i) {
+            for (int j = 0; j < in_features; ++j) {
+                weights[size_t(j) * out_features + i] = distribution(gen);
+            }
         }
     }
 
     const vector<float>& Forward(const vector<float>& input) {
         last_input = input.data();
-        // Cada neurônio soma o viés aos produtos entre entradas e pesos.
+        // Laço invertido (entrada j por fora, neurônio i por dentro): cada
+        // last_z[i] recebe as parcelas na mesma ordem j = 0, 1, ... do código
+        // original, mas os neurônios agora são independentes entre si no laço
+        // interno, que percorre a memória em sequência e pode ser vetorizado.
         for (int i = 0; i < out_features; ++i) {
-            const float* w = &weights[size_t(i) * in_features];
-            float sum = bias[i];
-            for (int j = 0; j < in_features; ++j) {
-                sum += input[j] * w[j];
+            last_z[i] = bias[i];
+        }
+        for (int j = 0; j < in_features; ++j) {
+            const float x = input[j];
+            const float* w = &weights[size_t(j) * out_features];
+            for (int i = 0; i < out_features; ++i) {
+                last_z[i] += x * w[i];
             }
-            last_z[i] = sum;
-            // As camadas ocultas usam ReLU. A última devolve escores lineares.
-            out[i] = final ? sum : max(0.0f, sum);
+        }
+        // As camadas ocultas usam ReLU. A última devolve escores lineares.
+        for (int i = 0; i < out_features; ++i) {
+            out[i] = final ? last_z[i] : max(0.0f, last_z[i]);
         }
         return out;
     }
@@ -81,36 +92,37 @@ public:
                              : grad_out[i] * (last_z[i] > 0.0f ? 1.0f : 0.0f);
         }
 
-        // Um único percurso sequencial pela matriz: cada linha i acumula sua
-        // contribuição em grad_in usando o peso ANTIGO e, em seguida, atualiza
-        // esse mesmo peso. A soma de grad_in[j] continua na ordem i = 0, 1, ...
-        // como no código original, então o resultado é idêntico.
-        if (calcular_grad_in) {
-            fill(grad_in.begin(), grad_in.end(), 0.0f);
+        for (int j = 0; j < in_features; ++j) {
+            float* w = &weights[size_t(j) * out_features];
+            // O gradiente da entrada usa os pesos anteriores à atualização,
+            // somados na ordem i = 0, 1, ... como no código original.
+            if (calcular_grad_in) {
+                float sum = 0;
+                for (int i = 0; i < out_features; ++i) {
+                    sum += delta[i] * w[i];
+                }
+                grad_in[j] = sum;
+            }
+            // SGD por amostra: laço contíguo e sem dependência entre iterações.
+            const float x = last_input[j];
+            for (int i = 0; i < out_features; ++i) {
+                w[i] -= learning_rate * (delta[i] * x);
+            }
         }
         for (int i = 0; i < out_features; ++i) {
-            float* w = &weights[size_t(i) * in_features];
-            const float d = delta[i];
-            if (calcular_grad_in) {
-                for (int j = 0; j < in_features; ++j) {
-                    grad_in[j] += d * w[j];
-                    w[j] -= learning_rate * (d * last_input[j]);
-                }
-            } else {
-                for (int j = 0; j < in_features; ++j) {
-                    w[j] -= learning_rate * (d * last_input[j]);
-                }
-            }
-            bias[i] -= learning_rate * d;
+            bias[i] -= learning_rate * delta[i];
         }
         return grad_in;
     }
 
-    // Soma de todos os parâmetros: usada apenas para validar a corretude.
+    // Soma de todos os parâmetros, na mesma ordem da versão original.
+    // Usada apenas para validar a corretude.
     double Checksum() const {
         double total = 0;
-        for (float weight : weights) {
-            total += weight;
+        for (int i = 0; i < out_features; ++i) {
+            for (int j = 0; j < in_features; ++j) {
+                total += weights[size_t(j) * out_features + i];
+            }
         }
         for (float b : bias) {
             total += b;
