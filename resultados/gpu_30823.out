@@ -1,0 +1,9 @@
+=== v1.0 | ncu | Mon Nov 23 05:10:34 PM EST 2026 | job 30823 | no compute20 ===
+name, driver_version, memory.total [MiB], clocks.max.sm [MHz]
+NVIDIA RTX A1000, 570.124.06, 8188 MiB, 2100 MHz
+ncu falhou; ultimas linhas do log:
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+==PROF== Disconnected from process 1335630

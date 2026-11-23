@@ -1,0 +1,75 @@
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 6.8927 s
+Checksum dos pesos -65.911822528
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+The target application terminated. One or more process it created re-parented.
+Waiting for termination of re-parented processes.
+Use the `--wait` option to modify this behavior.
+Collecting data...
+Generating '/tmp/nsys-report-803c.qdstrm'
+[1/6] [0%                          ] nsys_v1.0.nsys-rep[1/6] [0%                          ] nsys_v1.0.nsys-rep[1/6] [0%                          ] nsys_v1.0.nsys-rep[1/6] [5%                          ] nsys_v1.0.nsys-rep[1/6] [6%                          ] nsys_v1.0.nsys-rep[1/6] [7%                          ] nsys_v1.0.nsys-rep[1/6] [8%                          ] nsys_v1.0.nsys-rep[1/6] [9%                          ] nsys_v1.0.nsys-rep[1/6] [10%                         ] nsys_v1.0.nsys-rep[1/6] [11%                         ] nsys_v1.0.nsys-rep[1/6] [12%                         ] nsys_v1.0.nsys-rep[1/6] [13%                         ] nsys_v1.0.nsys-rep[1/6] [14%                         ] nsys_v1.0.nsys-rep[1/6] [=15%                        ] nsys_v1.0.nsys-rep[1/6] [=16%                        ] nsys_v1.0.nsys-rep[1/6] [=17%                        ] nsys_v1.0.nsys-rep[1/6] [==18%                       ] nsys_v1.0.nsys-rep[1/6] [==19%                       ] nsys_v1.0.nsys-rep[1/6] [==20%                       ] nsys_v1.0.nsys-rep[1/6] [==21%                       ] nsys_v1.0.nsys-rep[1/6] [===22%                      ] nsys_v1.0.nsys-rep[1/6] [===23%                      ] nsys_v1.0.nsys-rep[1/6] [===24%                      ] nsys_v1.0.nsys-rep[1/6] [====25%                     ] nsys_v1.0.nsys-rep[1/6] [====26%                     ] nsys_v1.0.nsys-rep[1/6] [====27%                     ] nsys_v1.0.nsys-rep[1/6] [====28%                     ] nsys_v1.0.nsys-rep[1/6] [=====29%                    ] nsys_v1.0.nsys-rep[1/6] [=====30%                    ] nsys_v1.0.nsys-rep[1/6] [=====31%                    ] nsys_v1.0.nsys-rep[1/6] [=====32%                    ] nsys_v1.0.nsys-rep[1/6] [======33%                   ] nsys_v1.0.nsys-rep[1/6] [======34%                   ] nsys_v1.0.nsys-rep[1/6] [======35%                   ] nsys_v1.0.nsys-rep[1/6] [=======36%                  ] nsys_v1.0.nsys-rep[1/6] [=======37%                  ] nsys_v1.0.nsys-rep[1/6] [=======38%                  ] nsys_v1.0.nsys-rep[1/6] [=======39%                  ] nsys_v1.0.nsys-rep[1/6] [========40%                 ] nsys_v1.0.nsys-rep[1/6] [========41%                 ] nsys_v1.0.nsys-rep[1/6] [========42%                 ] nsys_v1.0.nsys-rep[1/6] [=========43%                ] nsys_v1.0.nsys-rep[1/6] [=========44%                ] nsys_v1.0.nsys-rep[1/6] [=========45%                ] nsys_v1.0.nsys-rep[1/6] [=========46%                ] nsys_v1.0.nsys-rep[1/6] [==========47%               ] nsys_v1.0.nsys-rep[1/6] [==========48%               ] nsys_v1.0.nsys-rep[1/6] [==========49%               ] nsys_v1.0.nsys-rep[1/6] [===========50%              ] nsys_v1.0.nsys-rep[1/6] [===========51%              ] nsys_v1.0.nsys-rep[1/6] [===========52%              ] nsys_v1.0.nsys-rep[1/6] [===========53%              ] nsys_v1.0.nsys-rep[1/6] [============54%             ] nsys_v1.0.nsys-rep[1/6] [============55%             ] nsys_v1.0.nsys-rep[1/6] [============56%             ] nsys_v1.0.nsys-rep[1/6] [============57%             ] nsys_v1.0.nsys-rep[1/6] [=============58%            ] nsys_v1.0.nsys-rep[1/6] [=============59%            ] nsys_v1.0.nsys-rep[1/6] [=============60%            ] nsys_v1.0.nsys-rep[1/6] [==============61%           ] nsys_v1.0.nsys-rep[1/6] [==============62%           ] nsys_v1.0.nsys-rep[1/6] [==============63%           ] nsys_v1.0.nsys-rep[1/6] [==============64%           ] nsys_v1.0.nsys-rep[1/6] [===============65%          ] nsys_v1.0.nsys-rep[1/6] [===============66%          ] nsys_v1.0.nsys-rep[1/6] [===============67%          ] nsys_v1.0.nsys-rep[1/6] [================68%         ] nsys_v1.0.nsys-rep[1/6] [================69%         ] nsys_v1.0.nsys-rep[1/6] [================70%         ] nsys_v1.0.nsys-rep[1/6] [================71%         ] nsys_v1.0.nsys-rep[1/6] [=================72%        ] nsys_v1.0.nsys-rep[1/6] [=================73%        ] nsys_v1.0.nsys-rep[1/6] [=================74%        ] nsys_v1.0.nsys-rep[1/6] [==================75%       ] nsys_v1.0.nsys-rep[1/6] [========================100%] nsys_v1.0.nsys-rep[1/6] [========================100%] nsys_v1.0.nsys-rep
+[2/6] [0%                          ] nsys_v1.0.sqlite[2/6] [1%                          ] nsys_v1.0.sqlite[2/6] [2%                          ] nsys_v1.0.sqlite[2/6] [3%                          ] nsys_v1.0.sqlite[2/6] [4%                          ] nsys_v1.0.sqlite[2/6] [5%                          ] nsys_v1.0.sqlite[2/6] [6%                          ] nsys_v1.0.sqlite[2/6] [7%                          ] nsys_v1.0.sqlite[2/6] [8%                          ] nsys_v1.0.sqlite[2/6] [9%                          ] nsys_v1.0.sqlite[2/6] [10%                         ] nsys_v1.0.sqlite[2/6] [11%                         ] nsys_v1.0.sqlite[2/6] [12%                         ] nsys_v1.0.sqlite[2/6] [13%                         ] nsys_v1.0.sqlite[2/6] [14%                         ] nsys_v1.0.sqlite[2/6] [=15%                        ] nsys_v1.0.sqlite[2/6] [=16%                        ] nsys_v1.0.sqlite[2/6] [=17%                        ] nsys_v1.0.sqlite[2/6] [==18%                       ] nsys_v1.0.sqlite[2/6] [==19%                       ] nsys_v1.0.sqlite[2/6] [==20%                       ] nsys_v1.0.sqlite[2/6] [==21%                       ] nsys_v1.0.sqlite[2/6] [===22%                      ] nsys_v1.0.sqlite[2/6] [===23%                      ] nsys_v1.0.sqlite[2/6] [===24%                      ] nsys_v1.0.sqlite[2/6] [====25%                     ] nsys_v1.0.sqlite[2/6] [====26%                     ] nsys_v1.0.sqlite[2/6] [====27%                     ] nsys_v1.0.sqlite[2/6] [====28%                     ] nsys_v1.0.sqlite[2/6] [=====29%                    ] nsys_v1.0.sqlite[2/6] [=====30%                    ] nsys_v1.0.sqlite[2/6] [=====31%                    ] nsys_v1.0.sqlite[2/6] [=====32%                    ] nsys_v1.0.sqlite[2/6] [======33%                   ] nsys_v1.0.sqlite[2/6] [======34%                   ] nsys_v1.0.sqlite[2/6] [======35%                   ] nsys_v1.0.sqlite[2/6] [=======36%                  ] nsys_v1.0.sqlite[2/6] [=======37%                  ] nsys_v1.0.sqlite[2/6] [=======38%                  ] nsys_v1.0.sqlite[2/6] [=======39%                  ] nsys_v1.0.sqlite[2/6] [========40%                 ] nsys_v1.0.sqlite[2/6] [========41%                 ] nsys_v1.0.sqlite[2/6] [========42%                 ] nsys_v1.0.sqlite[2/6] [=========43%                ] nsys_v1.0.sqlite[2/6] [=========44%                ] nsys_v1.0.sqlite[2/6] [=========45%                ] nsys_v1.0.sqlite[2/6] [=========46%                ] nsys_v1.0.sqlite[2/6] [==========47%               ] nsys_v1.0.sqlite[2/6] [==========48%               ] nsys_v1.0.sqlite[2/6] [==========49%               ] nsys_v1.0.sqlite[2/6] [===========50%              ] nsys_v1.0.sqlite[2/6] [===========51%              ] nsys_v1.0.sqlite[2/6] [===========52%              ] nsys_v1.0.sqlite[2/6] [===========53%              ] nsys_v1.0.sqlite[2/6] [============54%             ] nsys_v1.0.sqlite[2/6] [============55%             ] nsys_v1.0.sqlite[2/6] [============56%             ] nsys_v1.0.sqlite[2/6] [============57%             ] nsys_v1.0.sqlite[2/6] [=============58%            ] nsys_v1.0.sqlite[2/6] [=============59%            ] nsys_v1.0.sqlite[2/6] [=============60%            ] nsys_v1.0.sqlite[2/6] [==============61%           ] nsys_v1.0.sqlite[2/6] [==============62%           ] nsys_v1.0.sqlite[2/6] [==============63%           ] nsys_v1.0.sqlite[2/6] [==============64%           ] nsys_v1.0.sqlite[2/6] [===============65%          ] nsys_v1.0.sqlite[2/6] [===============66%          ] nsys_v1.0.sqlite[2/6] [===============67%          ] nsys_v1.0.sqlite[2/6] [================68%         ] nsys_v1.0.sqlite[2/6] [================69%         ] nsys_v1.0.sqlite[2/6] [================70%         ] nsys_v1.0.sqlite[2/6] [================71%         ] nsys_v1.0.sqlite[2/6] [=================72%        ] nsys_v1.0.sqlite[2/6] [=================73%        ] nsys_v1.0.sqlite[2/6] [=================74%        ] nsys_v1.0.sqlite[2/6] [==================75%       ] nsys_v1.0.sqlite[2/6] [==================76%       ] nsys_v1.0.sqlite[2/6] [==================77%       ] nsys_v1.0.sqlite[2/6] [==================78%       ] nsys_v1.0.sqlite[2/6] [===================79%      ] nsys_v1.0.sqlite[2/6] [===================80%      ] nsys_v1.0.sqlite[2/6] [===================81%      ] nsys_v1.0.sqlite[2/6] [===================82%      ] nsys_v1.0.sqlite[2/6] [====================83%     ] nsys_v1.0.sqlite[2/6] [====================84%     ] nsys_v1.0.sqlite[2/6] [====================85%     ] nsys_v1.0.sqlite[2/6] [=====================86%    ] nsys_v1.0.sqlite[2/6] [=====================87%    ] nsys_v1.0.sqlite[2/6] [=====================88%    ] nsys_v1.0.sqlite[2/6] [=====================89%    ] nsys_v1.0.sqlite[2/6] [======================90%   ] nsys_v1.0.sqlite[2/6] [======================91%   ] nsys_v1.0.sqlite[2/6] [======================92%   ] nsys_v1.0.sqlite[2/6] [=======================93%  ] nsys_v1.0.sqlite[2/6] [=======================94%  ] nsys_v1.0.sqlite[2/6] [=======================95%  ] nsys_v1.0.sqlite[2/6] [=======================96%  ] nsys_v1.0.sqlite[2/6] [========================97% ] nsys_v1.0.sqlite[2/6] [========================98% ] nsys_v1.0.sqlite[2/6] [========================99% ] nsys_v1.0.sqlite[2/6] [========================100%] nsys_v1.0.sqlite[2/6] [========================100%] nsys_v1.0.sqlite
+[3/6] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)  Min (ns)   Max (ns)   StdDev (ns)            Name         
+ --------  ---------------  ---------  -----------  --------  --------  ----------  ------------  ----------------------
+     68.8    4,687,977,850    389,959     12,021.7   7,078.0       986  26,227,883     104,633.9  cudaMemcpy            
+     30.2    2,060,218,437  1,169,838      1,761.1   1,244.0     1,101  27,365,677     104,767.3  cudaLaunchKernel      
+      1.0       66,924,338         17  3,936,725.8   1,358.0       933  66,901,165  16,225,564.6  cudaMalloc            
+      0.0          123,625         17      7,272.1   1,334.0     1,010      90,430      21,514.1  cudaFree              
+      0.0            9,661          1      9,661.0   9,661.0     9,661       9,661           0.0  cudaDeviceSynchronize 
+      0.0              628          1        628.0     628.0       628         628           0.0  cuModuleGetLoadingMode
+
+[4/6] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     61.3    1,755,798,847    584,919   3,001.8   2,624.0     1,599     7,008      1,274.1  backward_camada(const float *, const float *, const float *, float *, float *, float *, int, int, b…
+     38.7    1,107,152,430    584,919   1,892.8   1,600.0     1,247     4,160        671.7  forward_camada(const float *, const float *, const float *, float *, float *, int, int, bool)       
+
+[5/6] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)   Count   Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -------  --------  --------  --------  --------  -----------  ----------------------------
+     55.0      154,740,183  194,979     793.6     768.0       416    19,711         71.6  [CUDA memcpy Device-to-Host]
+     45.0      126,540,975  194,980     649.0     640.0       287    78,655        182.0  [CUDA memcpy Host-to-Device]
+
+[6/6] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)   Count   Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -------  --------  --------  --------  --------  -----------  ----------------------------
+      8.789  194,980     0.000     0.000     0.000     0.979        0.002  [CUDA memcpy Host-to-Device]
+      7.810  194,979     0.000     0.000     0.000     0.008        0.000  [CUDA memcpy Device-to-Host]
+
+Generated:
+    /home/luigics/awful-barenn/profiling/nsys_v1.0.nsys-rep
+    /home/luigics/awful-barenn/profiling/nsys_v1.0.sqlite

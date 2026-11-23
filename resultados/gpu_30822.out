@@ -1,0 +1,34 @@
+=== v1.0 | nsys | Mon Nov 23 05:09:56 PM EST 2026 | job 30822 | no compute20 ===
+name, driver_version, memory.total [MiB], clocks.max.sm [MHz]
+NVIDIA RTX A1000, 570.124.06, 8188 MiB, 2100 MHz
+[3/6] Executing 'cuda_api_sum' stats report
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)  Min (ns)   Max (ns)   StdDev (ns)            Name         
+ --------  ---------------  ---------  -----------  --------  --------  ----------  ------------  ----------------------
+     68.8    4,687,977,850    389,959     12,021.7   7,078.0       986  26,227,883     104,633.9  cudaMemcpy            
+     30.2    2,060,218,437  1,169,838      1,761.1   1,244.0     1,101  27,365,677     104,767.3  cudaLaunchKernel      
+      1.0       66,924,338         17  3,936,725.8   1,358.0       933  66,901,165  16,225,564.6  cudaMalloc            
+      0.0          123,625         17      7,272.1   1,334.0     1,010      90,430      21,514.1  cudaFree              
+      0.0            9,661          1      9,661.0   9,661.0     9,661       9,661           0.0  cudaDeviceSynchronize 
+      0.0              628          1        628.0     628.0       628         628           0.0  cuModuleGetLoadingMode
+
+[4/6] Executing 'cuda_gpu_kern_sum' stats report
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     61.3    1,755,798,847    584,919   3,001.8   2,624.0     1,599     7,008      1,274.1  backward_camada(const float *, const float *, const float *, float *, float *, float *, int, int, b…
+     38.7    1,107,152,430    584,919   1,892.8   1,600.0     1,247     4,160        671.7  forward_camada(const float *, const float *, const float *, float *, float *, int, int, bool)       
+
+[5/6] Executing 'cuda_gpu_mem_time_sum' stats report
+
+ Time (%)  Total Time (ns)   Count   Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -------  --------  --------  --------  --------  -----------  ----------------------------
+     55.0      154,740,183  194,979     793.6     768.0       416    19,711         71.6  [CUDA memcpy Device-to-Host]
+     45.0      126,540,975  194,980     649.0     640.0       287    78,655        182.0  [CUDA memcpy Host-to-Device]
+
+[6/6] Executing 'cuda_gpu_mem_size_sum' stats report
+
+ Total (MB)   Count   Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -------  --------  --------  --------  --------  -----------  ----------------------------
+      8.789  194,980     0.000     0.000     0.000     0.979        0.002  [CUDA memcpy Host-to-Device]
+      7.810  194,979     0.000     0.000     0.000     0.008        0.000  [CUDA memcpy Device-to-Host]
