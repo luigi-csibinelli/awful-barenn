@@ -16,9 +16,28 @@ void verificar_cuda(const string& etapa) {
 
 // Dimensões da rede 64 -> 32 -> 16 -> 10.
 constexpr int E = Barenn::entradas, H1 = 32, H2 = 16, C = Barenn::classes;
-// Forward de uma camada: a thread i calcula o neurônio i somando na ordem
-// j = 0, 1, ... (igual à CPU). "passo" é a distância entre duas linhas da
-// matriz transposta de pesos.
+// Na shared memory cada linha da matriz transposta ganha 1 coluna extra de
+// preenchimento (padding). Sem ele, no backward as threads j = 0, 1, ...
+// leriam endereços separados por exatamente 32 floats (camada 1), todos no
+// mesmo banco da shared memory: 32 acessos serializados (bank conflict).
+constexpr int S1 = H1 + 1, S2 = H2 + 1, S3 = C + 1;
+
+// Copia uma matriz transposta (in x out) da memória global para a shared
+// memory com padding, ou de volta. Todas as threads do bloco cooperam e
+// threads vizinhas acessam endereços globais vizinhos (coalescido).
+__device__ void carregar(float* s, const float* g, int in, int out, int passo) {
+    for (int k = threadIdx.x; k < in * out; k += blockDim.x) {
+        s[(k / out) * passo + (k % out)] = g[k];
+    }
+}
+__device__ void salvar(float* g, const float* s, int in, int out, int passo) {
+    for (int k = threadIdx.x; k < in * out; k += blockDim.x) {
+        g[k] = s[(k / out) * passo + (k % out)];
+    }
+}
+
+// Forward de uma camada a partir da shared memory: a thread i calcula o
+// neurônio i somando na ordem j = 0, 1, ... (igual à CPU).
 __device__ void forward(const float* x, const float* W, int passo,
                         const float* b, float* z, float* a, int in, int out,
                         bool final) {
@@ -70,31 +89,36 @@ __device__ void delta_relu(const float* grad, const float* z, float* delta,
 // Treina UMA época inteira em um único lançamento, com um único bloco.
 // O SGD continua amostra por amostra (cada amostra depende dos pesos
 // atualizados pela anterior); o paralelismo está DENTRO de cada amostra,
-// entre os neurônios. Nesta versão tudo fica na memória global: pesos,
-// vieses e um buffer de trabalho com as ativações e os gradientes.
+// entre os neurônios. Pesos, ativações e gradientes ficam na shared memory
+// durante toda a época e só voltam para a memória global no final.
 __global__ void treinar_epoca(const float* imagens, const int* rotulos, int N,
                               float* W1, float* b1, float* W2, float* b2,
                               float* W3, float* b3, float taxa,
-                              double* perda_epoca, float* trabalho) {
-    float* z1 = trabalho;
-    float* a1 = z1 + H1;
-    float* z2 = a1 + H1;
-    float* a2 = z2 + H2;
-    float* z3 = a2 + H2;
-    float* g3 = z3 + C;
-    float* g2 = g3 + C;
-    float* g1 = g2 + H2;
-    float* d2 = g1 + H1;
-    float* d1 = d2 + H2;
+                              double* perda_epoca) {
+    __shared__ float sW1[E * S1], sW2[H1 * S2], sW3[H2 * S3];
+    __shared__ float sb1[H1], sb2[H2], sb3[C];
+    __shared__ float x[E], z1[H1], a1[H1], z2[H2], a2[H2], z3[C];
+    __shared__ float g3[C], g2[H2], g1[H1], d2[H2], d1[H1];
+
+    carregar(sW1, W1, E, H1, S1);
+    carregar(sW2, W2, H1, H2, S2);
+    carregar(sW3, W3, H2, C, S3);
+    for (int i = threadIdx.x; i < H1; i += blockDim.x) sb1[i] = b1[i];
+    for (int i = threadIdx.x; i < H2; i += blockDim.x) sb2[i] = b2[i];
+    for (int i = threadIdx.x; i < C; i += blockDim.x) sb3[i] = b3[i];
     double perda_total = 0;  // usada só pela thread 0
+    __syncthreads();
 
     for (int n = 0; n < N; ++n) {
-        const float* x = imagens + n * E;
-        forward(x, W1, H1, b1, z1, a1, E, H1, false);
+        for (int j = threadIdx.x; j < E; j += blockDim.x) {
+            x[j] = imagens[n * E + j];
+        }
         __syncthreads();
-        forward(a1, W2, H2, b2, z2, a2, H1, H2, false);
+        forward(x, sW1, S1, sb1, z1, a1, E, H1, false);
         __syncthreads();
-        forward(a2, W3, C, b3, z3, nullptr, H2, C, true);
+        forward(a1, sW2, S2, sb2, z2, a2, H1, H2, false);
+        __syncthreads();
+        forward(a2, sW3, S3, sb3, z3, nullptr, H2, C, true);
         __syncthreads();
 
         // Perda (metade da soma dos erros quadráticos), igual à CPU. São só
@@ -112,18 +136,24 @@ __global__ void treinar_epoca(const float* imagens, const int* rotulos, int N,
         __syncthreads();
 
         // Camada 3 (linear): delta é o próprio gradiente da perda.
-        backward(a2, g3, W3, C, b3, g2, H2, C, taxa);
+        backward(a2, g3, sW3, S3, sb3, g2, H2, C, taxa);
         __syncthreads();
         delta_relu(g2, z2, d2, H2);
         __syncthreads();
-        backward(a1, d2, W2, H2, b2, g1, H1, H2, taxa);
+        backward(a1, d2, sW2, S2, sb2, g1, H1, H2, taxa);
         __syncthreads();
         delta_relu(g1, z1, d1, H1);
         __syncthreads();
-        backward(x, d1, W1, H1, b1, nullptr, E, H1, taxa);
+        backward(x, d1, sW1, S1, sb1, nullptr, E, H1, taxa);
         __syncthreads();
     }
 
+    salvar(W1, sW1, E, H1, S1);
+    salvar(W2, sW2, H1, H2, S2);
+    salvar(W3, sW3, H2, C, S3);
+    for (int i = threadIdx.x; i < H1; i += blockDim.x) b1[i] = sb1[i];
+    for (int i = threadIdx.x; i < H2; i += blockDim.x) b2[i] = sb2[i];
+    for (int i = threadIdx.x; i < C; i += blockDim.x) b3[i] = sb3[i];
     if (threadIdx.x == 0) {
         *perda_epoca = perda_total;
     }
@@ -209,9 +239,6 @@ int main(int argc, char** argv) {
         CamadaGPU g3(l3, 16, Barenn::classes, true);
         double* d_perda = nullptr;
         cudaMalloc(&d_perda, sizeof(double));
-        // Ativações e gradientes intermediários de uma amostra (212 floats).
-        float* d_trabalho = nullptr;
-        cudaMalloc(&d_trabalho, sizeof(float) * 256);
 
         verificar_cuda("preparacao");
 
@@ -220,8 +247,7 @@ int main(int argc, char** argv) {
         for (int epoca = 0; epoca < epocas; ++epoca) {
             // Uma época inteira em um único kernel.
             treinar_epoca<<<1, bloco>>>(d_imagens, d_rotulos, N, g1.W, g1.b,
-                                        g2.W, g2.b, g3.W, g3.b, taxa, d_perda,
-                                        d_trabalho);
+                                        g2.W, g2.b, g3.W, g3.b, taxa, d_perda);
             double perda_total = 0;
             cudaMemcpy(&perda_total, d_perda, sizeof(double),
                        cudaMemcpyDeviceToHost);
@@ -239,7 +265,6 @@ int main(int argc, char** argv) {
         cudaFree(d_imagens);
         cudaFree(d_rotulos);
         cudaFree(d_perda);
-        cudaFree(d_trabalho);
 
         cout << fixed << setprecision(4)
              << "TREINO | " << treino.size() << " imagens\n";

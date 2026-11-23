@@ -1,0 +1,12 @@
+== sem_padding
+OK: saida identica a referencia
+tempo de treino (s): media 0.8832 | min 0.8809 | max 0.8842 | 5 execucoes
+== bloco32
+OK: saida identica a referencia
+tempo de treino (s): media 0.4670 | min 0.4668 | max 0.4673 | 5 execucoes
+== bloco128
+OK: saida identica a referencia
+tempo de treino (s): media 0.4056 | min 0.4054 | max 0.4058 | 5 execucoes
+== kernel_unico
+OK: saida identica a referencia
+tempo de treino (s): media 0.4371 | min 0.4369 | max 0.4372 | 5 execucoes
