@@ -1,0 +1,93 @@
+### custo proprio (exclusivo) por funcao
+--------------------------------------------------------------------------------
+Profile data file 'profiling/callgrind.v0.0.out' (creator: callgrind-3.24.0)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 1930380114
+Trigger: Program termination
+Profiled target:  ./barenn (PID 3384879, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      
+--------------------------------------------------------------------------------
+14,026,800,314 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                      file:function
+--------------------------------------------------------------------------------
+9,450,612,091 (67.38%)  barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) [/home/luigics/awful-barenn/barenn]
+3,342,228,391 (23.83%)  barenn.cpp:main [/home/luigics/awful-barenn/barenn]
+  188,966,340 ( 1.35%)  ???:_int_free [/usr/lib64/libc.so.6]
+  155,978,400 ( 1.11%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_vector.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)
+  126,675,878 ( 0.90%)  ???:malloc [/usr/lib64/libc.so.6]
+   73,664,906 ( 0.53%)  ???:free [/usr/lib64/libc.so.6]
+   63,608,365 ( 0.45%)  ???:____strtof_l_internal [/usr/lib64/libc.so.6]
+   54,982,550 ( 0.39%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_vector.h:main
+   54,949,902 ( 0.39%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_float(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, std::string&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   38,214,716 ( 0.27%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_algobase.h:main
+   35,805,076 ( 0.26%)  ???:std::istream::sentry::sentry(std::istream&, bool) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   35,359,128 ( 0.25%)  ???:operator new(unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   34,169,600 ( 0.24%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   30,662,211 ( 0.22%)  barenn.cpp:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >) [/home/luigics/awful-barenn/barenn]
+   27,958,896 ( 0.20%)  ???:__memset_avx2_unaligned_erms [/usr/lib64/libc.so.6]
+   25,943,629 ( 0.18%)  ???:__memcpy_avx_unaligned_erms [/usr/lib64/libc.so.6]
+   17,873,939 ( 0.13%)  ???:std::istreambuf_iterator<char, std::char_traits<char> >::equal(std::istreambuf_iterator<char, std::char_traits<char> > const&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   16,904,960 ( 0.12%)  ???:std::istream& std::istream::_M_extract<float>(float&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   15,987,790 ( 0.11%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/new_allocator.h:main
+   14,622,975 ( 0.10%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_algobase.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)
+
+### custo inclusivo por funcao
+--------------------------------------------------------------------------------
+Profile data file 'profiling/callgrind.v0.0.out' (creator: callgrind-3.24.0)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 1930380114
+Trigger: Program termination
+Profiled target:  ./barenn (PID 3384879, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      
+--------------------------------------------------------------------------------
+14,026,800,314 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                       file:function
+--------------------------------------------------------------------------------
+28,049,016,681 (200.0%)  ???:(below main) [/home/luigics/awful-barenn/barenn]
+14,026,800,314 (100.0%)  ???:0x000000000001da60 [/usr/lib64/ld-linux-x86-64.so.2]
+14,024,508,422 (99.98%)  ???:__libc_start_main@@GLIBC_2.34 [/usr/lib64/libc.so.6]
+14,024,494,523 (99.98%)  /home/luigics/awful-barenn/barenn.cpp:main
+13,625,914,010 (97.14%)  barenn.cpp:main [/home/luigics/awful-barenn/barenn]
+ 9,777,582,264 (69.71%)  barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) [/home/luigics/awful-barenn/barenn]
+   436,322,473 ( 3.11%)  barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [/home/luigics/awful-barenn/barenn]
+   380,920,730 ( 2.72%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/istream:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+   377,814,873 ( 2.69%)  ???:std::istream& std::istream::_M_extract<float>(float&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   342,566,233 ( 2.44%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   282,906,657 ( 2.02%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/new_allocator.h:main
+   280,431,239 ( 2.00%)  ???:0x00000000048e93a0 [???]
+   274,537,450 ( 1.96%)  ???:operator delete(void*) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   268,644,262 ( 1.92%)  ???:0x00000000048e9be0 [???]
+   262,750,370 ( 1.87%)  ???:free [/usr/lib64/libc.so.6]
+   251,433,510 ( 1.79%)  ???:operator delete(void*, unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   189,085,429 ( 1.35%)  ???:_int_free [/usr/lib64/libc.so.6]
+   168,771,500 ( 1.20%)  ???:operator new(unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   155,978,400 ( 1.11%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_vector.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)
+   134,531,822 ( 0.96%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/new_allocator.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)

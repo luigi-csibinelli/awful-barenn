@@ -1,0 +1,6 @@
+barenn
+barenn_cuda
+profiling/*.out
+profiling/*.nsys-rep
+profiling/*.sqlite
+profiling/*.ncu-rep
