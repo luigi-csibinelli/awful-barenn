@@ -1,0 +1,93 @@
+### custo proprio (exclusivo) por funcao
+--------------------------------------------------------------------------------
+Profile data file 'profiling/callgrind.v0.1.out' (creator: callgrind-3.24.0)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 1247284217
+Trigger: Program termination
+Profiled target:  ./barenn (PID 3177878, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      
+--------------------------------------------------------------------------------
+10,488,611,214 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                      file:function
+--------------------------------------------------------------------------------
+9,982,889,847 (95.18%)  barenn.cpp:main [/home/luigics/awful-barenn/barenn]
+   63,608,365 ( 0.61%)  ???:____strtof_l_internal [/usr/lib64/libc.so.6]
+   54,949,902 ( 0.52%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_float(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, std::string&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   35,805,076 ( 0.34%)  ???:std::istream::sentry::sentry(std::istream&, bool) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   35,680,063 ( 0.34%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_algobase.h:main
+   34,169,600 ( 0.33%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   31,041,375 ( 0.30%)  barenn.cpp:Barenn::avaliar(Barenn::DenseLayer&, Barenn::DenseLayer&, Barenn::DenseLayer&, std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> > const&) [/home/luigics/awful-barenn/barenn]
+   24,124,223 ( 0.23%)  ???:_int_free [/usr/lib64/libc.so.6]
+   17,873,939 ( 0.17%)  ???:std::istreambuf_iterator<char, std::char_traits<char> >::equal(std::istreambuf_iterator<char, std::char_traits<char> > const&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   16,904,960 ( 0.16%)  ???:std::istream& std::istream::_M_extract<float>(float&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   15,969,342 ( 0.15%)  ???:malloc [/usr/lib64/libc.so.6]
+   13,249,224 ( 0.13%)  ???:round_and_return [/usr/lib64/libc.so.6]
+   10,071,040 ( 0.10%)  ???:void std::__convert_to_v<float>(char const*, float&, std::_Ios_Iostate&, __locale_struct* const&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   10,005,828 ( 0.10%)  ???:str_to_mpn.part.0.constprop.0 [/usr/lib64/libc.so.6]
+    9,711,360 ( 0.09%)  ???:std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+    9,274,606 ( 0.09%)  ???:free [/usr/lib64/libc.so.6]
+    8,992,000 ( 0.09%)  ???:std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+    8,632,320 ( 0.08%)  ???:std::string::reserve(unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+    8,114,445 ( 0.08%)  ???:std::istreambuf_iterator<char, std::char_traits<char> >::_M_get() const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+
+
+### custo inclusivo por funcao
+--------------------------------------------------------------------------------
+Profile data file 'profiling/callgrind.v0.1.out' (creator: callgrind-3.24.0)
+--------------------------------------------------------------------------------
+I1 cache: 
+D1 cache: 
+LL cache: 
+Timerange: Basic block 0 - 1247284217
+Trigger: Program termination
+Profiled target:  ./barenn (PID 3177878, part 1)
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Thresholds:       99
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      
+--------------------------------------------------------------------------------
+10,488,611,214 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                       file:function
+--------------------------------------------------------------------------------
+20,972,638,739 (200.0%)  ???:(below main) [/home/luigics/awful-barenn/barenn]
+10,488,611,214 (100.0%)  ???:0x000000000001da60 [/usr/lib64/ld-linux-x86-64.so.2]
+10,486,319,451 (99.98%)  ???:__libc_start_main@@GLIBC_2.34 [/usr/lib64/libc.so.6]
+10,486,305,552 (99.98%)  /home/luigics/awful-barenn/barenn.cpp:main
+10,444,527,957 (99.58%)  barenn.cpp:main [/home/luigics/awful-barenn/barenn]
+   428,813,401 ( 4.09%)  barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [/home/luigics/awful-barenn/barenn]
+   380,920,618 ( 3.63%)  /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/istream:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+   377,814,721 ( 3.60%)  ???:std::istream& std::istream::_M_extract<float>(float&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   342,566,081 ( 3.27%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   116,242,019 ( 1.11%)  ???:0x00000000048ea210 [???]
+   115,521,562 ( 1.10%)  ???:void std::__convert_to_v<float>(char const*, float&, std::_Ios_Iostate&, __locale_struct* const&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   105,450,522 ( 1.01%)  ???:0x00000000048e8390 [???]
+   104,730,232 ( 1.00%)  ???:strtof_l [/usr/lib64/libc.so.6]
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/istream
+--------------------------------------------------------------------------------
+Ir                 
+
+-- line 98 ----------------------------------------

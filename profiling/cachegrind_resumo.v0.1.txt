@@ -1,0 +1,22 @@
+==3276624== Cachegrind, a high-precision tracing profiler
+==3276624== Copyright (C) 2002-2024, and GNU GPL'd, by Nicholas Nethercote et al.
+==3276624== Using Valgrind-3.24.0 and LibVEX; rerun with -h for copyright info
+==3276624== Command: ./barenn
+==3276624== 
+--3276624-- warning: L3 cache found, using its data for the LL simulation.
+==3276624== 
+==3276624== I refs:        10,491,149,644
+==3276624== I1  misses:            59,352
+==3276624== LLi misses:             2,808
+==3276624== I1  miss rate:           0.00%
+==3276624== LLi miss rate:           0.00%
+==3276624== 
+==3276624== D refs:         3,377,635,414  (2,594,177,154 rd   + 783,458,260 wr)
+==3276624== D1  misses:         1,005,075  (      971,854 rd   +      33,221 wr)
+==3276624== LLd misses:            36,629  (        8,132 rd   +      28,497 wr)
+==3276624== D1  miss rate:            0.0% (          0.0%     +         0.0%  )
+==3276624== LLd miss rate:            0.0% (          0.0%     +         0.0%  )
+==3276624== 
+==3276624== LL refs:            1,064,427  (    1,031,206 rd   +      33,221 wr)
+==3276624== LL misses:             39,437  (       10,940 rd   +      28,497 wr)
+==3276624== LL miss rate:             0.0% (          0.0%     +         0.0%  )
