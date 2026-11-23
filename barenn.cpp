@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <cstdlib>
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -12,6 +13,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <omp.h>
 
 using namespace std;
 
@@ -113,6 +116,89 @@ public:
             bias[i] -= learning_rate * delta[i];
         }
         return grad_in;
+    }
+
+    // ---------------------------------------------------------------------
+    // Modo mini-batch (OpenMP). As funções abaixo NÃO alteram a camada: todas
+    // as amostras do lote usam os mesmos pesos, então podem ser processadas
+    // ao mesmo tempo por threads diferentes, cada uma com seus próprios
+    // buffers (padrão "private + merge" da Aula 8).
+    // ---------------------------------------------------------------------
+    size_t NumPesos() const { return weights.size(); }
+
+    void ForwardAmostra(const float* input, float* z,
+                        float* a) const {
+        const float* wt = weights.data();
+        for (int i = 0; i < out_features; ++i) {
+            z[i] = bias[i];
+        }
+        for (int j = 0; j < in_features; ++j) {
+            const float x = input[j];
+            const float* w = wt + size_t(j) * out_features;
+            for (int i = 0; i < out_features; ++i) {
+                z[i] += x * w[i];
+            }
+        }
+        for (int i = 0; i < out_features; ++i) {
+            a[i] = final ? z[i] : max(0.0f, z[i]);
+        }
+    }
+
+    // Calcula delta e o gradiente da entrada (se grad_in != nullptr) e SOMA o
+    // gradiente dos pesos/viés desta amostra no acumulador da thread (gW, gb).
+    void BackwardAmostra(const float* input,
+                         const float* z,
+                         const float* grad_out,
+                         float* delta, float* grad_in,
+                         float* gW, float* gb) const {
+        const float* wt = weights.data();
+        for (int i = 0; i < out_features; ++i) {
+            delta[i] = final ? grad_out[i]
+                             : grad_out[i] * (z[i] > 0.0f ? 1.0f : 0.0f);
+        }
+        for (int j = 0; j < in_features; ++j) {
+            const float* w = wt + size_t(j) * out_features;
+            if (grad_in) {
+                float sum = 0;
+                for (int i = 0; i < out_features; ++i) {
+                    sum += delta[i] * w[i];
+                }
+                grad_in[j] = sum;
+            }
+            const float x = input[j];
+            float* g = gW + size_t(j) * out_features;
+            for (int i = 0; i < out_features; ++i) {
+                g[i] += delta[i] * x;
+            }
+        }
+        for (int i = 0; i < out_features; ++i) {
+            gb[i] += delta[i];
+        }
+    }
+
+    // Merge: soma os acumuladores das T threads (na ordem t = 0, 1, ...) e
+    // atualiza os parâmetros. Chamada DENTRO da região paralela: o "omp for"
+    // divide os parâmetros entre as threads, cada uma escrevendo em posições
+    // distintas (sem condição de corrida).
+    void AtualizarLote(const float* accW, const float* accb, int T,
+                       size_t stride, float learning_rate) {
+        const size_t n = weights.size();
+        #pragma omp for schedule(static)
+        for (size_t p = 0; p < n; ++p) {
+            float g = accW[p];
+            for (int t = 1; t < T; ++t) {
+                g += accW[size_t(t) * stride + p];
+            }
+            weights[p] -= learning_rate * g;
+        }
+        #pragma omp for schedule(static)
+        for (int i = 0; i < out_features; ++i) {
+            float g = accb[i];
+            for (int t = 1; t < T; ++t) {
+                g += accb[size_t(t) * stride + i];
+            }
+            bias[i] -= learning_rate * g;
+        }
     }
 
     // Soma de todos os parâmetros, na mesma ordem da versão original.
@@ -308,26 +394,86 @@ int main(int argc, char** argv) {
         Barenn::DenseLayer l1(Barenn::entradas, 32);
         Barenn::DenseLayer l2(32, 16);
         Barenn::DenseLayer l3(16, Barenn::classes, true);
-        vector<float> gradiente(Barenn::classes);
         array<double, epocas> perdas{};
+
+        // Tamanho do lote: variável de ambiente BARENN_BATCH (padrão 1).
+        // Com B = 1 o algoritmo é exatamente o SGD por amostra original.
+        int B = 1;
+        if (const char* valor = getenv("BARENN_BATCH")) {
+            B = max(1, atoi(valor));
+        }
+        const int T = omp_get_max_threads();
+        cerr << "mini-batch B = " << B << " | threads = " << T << "\n";
+
+        // Acumulador de gradientes de cada thread: [W1 b1 W2 b2 W3 b3].
+        const int n1 = 32, n2 = 16, n3 = Barenn::classes;
+        const size_t oW1 = 0, ob1 = oW1 + l1.NumPesos();
+        const size_t oW2 = ob1 + n1, ob2 = oW2 + l2.NumPesos();
+        const size_t oW3 = ob2 + n2, ob3 = oW3 + l3.NumPesos();
+        const size_t P = ob3 + n3;
+        vector<float> acumuladores(size_t(T) * P);
+        // Perda acumulada por thread.
+        vector<double> perda_thread(T, 0.0);
+        const int N = static_cast<int>(treino.size());
 
         // A medição inclui forward, perda e backward de todas as épocas.
         const auto inicio = chrono::steady_clock::now();
-        for (int epoca = 0; epoca < epocas; ++epoca) {
-            double perda_total = 0;
-            // Uma época percorre todo o conjunto na ordem do arquivo.
-            for (const auto& amostra : treino) {
-                const auto& escores =
-                    l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
-                perda_total += Barenn::perda(escores, amostra.rotulo, &gradiente);
+        // Uma única região paralela para todo o treino: as threads são criadas
+        // uma vez (fork/join) e reaproveitadas em todos os lotes.
+        #pragma omp parallel
+        {
+            const int t = omp_get_thread_num();
+            float* meu = &acumuladores[size_t(t) * P];
+            // Buffers privados da thread: ela processa uma amostra por vez.
+            vector<float> z1(n1), a1(n1), d1(n1), g1(n1);
+            vector<float> z2(n2), a2(n2), d2(n2), g2(n2);
+            vector<float> z3(n3), a3(n3), d3(n3), grad3(n3);
 
-                // Propaga o gradiente da última camada até a primeira.
-                // Cada Backward também atualiza os parâmetros da sua camada.
-                const auto& grad3 = l3.Backward(gradiente, taxa);
-                const auto& grad2 = l2.Backward(grad3, taxa);
-                l1.Backward(grad2, taxa, false);
+            for (int epoca = 0; epoca < epocas; ++epoca) {
+                // Uma época percorre todo o conjunto na ordem do arquivo.
+                for (int base = 0; base < N; base += B) {
+                    const int nb = min(B, N - base);
+                    fill(meu, meu + P, 0.0f);
+
+                    // 1) Cada thread processa amostras diferentes do lote com
+                    //    os MESMOS pesos e acumula os gradientes no seu buffer.
+                    #pragma omp for schedule(static)
+                    for (int b = 0; b < nb; ++b) {
+                        const auto& amostra = treino[base + b];
+                        const float* x = amostra.imagem.data();
+                        l1.ForwardAmostra(x, z1.data(), a1.data());
+                        l2.ForwardAmostra(a1.data(), z2.data(), a2.data());
+                        l3.ForwardAmostra(a2.data(), z3.data(), a3.data());
+                        perda_thread[t] +=
+                            Barenn::perda(a3, amostra.rotulo, &grad3);
+                        l3.BackwardAmostra(a2.data(), z3.data(), grad3.data(),
+                                           d3.data(), g2.data(),
+                                           meu + oW3, meu + ob3);
+                        l2.BackwardAmostra(a1.data(), z2.data(), g2.data(),
+                                           d2.data(), g1.data(),
+                                           meu + oW2, meu + ob2);
+                        l1.BackwardAmostra(x, z1.data(), g1.data(), d1.data(),
+                                           nullptr, meu + oW1, meu + ob1);
+                    }
+                    // (barreira implícita do omp for: todos os gradientes prontos)
+
+                    // 2) Merge dos acumuladores e atualização dos pesos.
+                    const float* acc = acumuladores.data();
+                    l3.AtualizarLote(acc + oW3, acc + ob3, T, P, taxa);
+                    l2.AtualizarLote(acc + oW2, acc + ob2, T, P, taxa);
+                    l1.AtualizarLote(acc + oW1, acc + ob1, T, P, taxa);
+                }
+                // Fim da época: soma as perdas das threads em ordem fixa.
+                #pragma omp single
+                {
+                    double perda_total = 0;
+                    for (int k = 0; k < T; ++k) {
+                        perda_total += perda_thread[k];
+                        perda_thread[k] = 0;
+                    }
+                    perdas[epoca] = perda_total / treino.size();
+                }
             }
-            perdas[epoca] = perda_total / treino.size();
         }
         const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
 
