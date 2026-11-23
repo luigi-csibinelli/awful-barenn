@@ -1,6 +1,6 @@
 .RECIPEPREFIX = >
 CXX      ?= g++
-CXXFLAGS ?= -std=c++17 -O3 -g
+CXXFLAGS ?= -std=c++17 -O3 -g -fopenmp
 TARGET   := barenn
 
 $(TARGET): barenn.cpp
